@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Даша Белкина](https://up.htmlacademy.ru/javascript/18/user/570339).
-* Наставник: `Неизвестно`.
+* Наставник: [Владимир Кабыш](https://htmlacademy.ru/profile/kabysh).
 
 ---
 
