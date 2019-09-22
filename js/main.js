@@ -20,6 +20,18 @@ var getRandomNumberInRange = function (min, max) {
   return Math.floor(Math.random() * max) + min;
 };
 
+var shuffleArray = function (array) {
+  var j;
+  var temp;
+  for (var i = array.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    temp = array[j];
+    array[j] = array[i];
+    array[i] = temp;
+  }
+  return array;
+};
+
 var getMock = function () {
   var mock = [];
   for (var i = 0; i < totalNumber; i++) {
@@ -30,9 +42,9 @@ var getMock = function () {
     var guests = getRandomNumberInRange(1, 30);
     var checkin = mockCheckin[getRandomNumberInRange(0, mockCheckin.length)];
     var checkout = mockCheckin[getRandomNumberInRange(0, mockCheckout.length)];
-    var features = mockFeatures.slice[getRandomNumberInRange(0, mockFeatures.length)];
+    var features = shuffleArray(mockFeatures).slice(0, getRandomNumberInRange(0, mockFeatures.length));
     var description = mockDescription[getRandomNumberInRange(0, mockDescription.length)];
-    var photos = mockPhotos.slice[getRandomNumberInRange(0, mockPhotos.length)];
+    var photos = shuffleArray(mockPhotos).slice(0, getRandomNumberInRange(0, mockPhotos.length));
     var locationX = getRandomNumberInRange(minLocationX + pinWidth, maxLocationX) - pinWidth;
     var locationY = getRandomNumberInRange(minLocationY - pinHeight, maxLocationY - pinHeight);
 
