@@ -45,7 +45,7 @@ var getMock = function () {
     var features = shuffleArray(mockFeatures).slice(0, getRandomNumberInRange(0, mockFeatures.length));
     var description = mockDescription[getRandomNumberInRange(0, mockDescription.length)];
     var photos = shuffleArray(mockPhotos).slice(0, getRandomNumberInRange(0, mockPhotos.length));
-    var locationX = getRandomNumberInRange(minLocationX + pinWidth, maxLocationX) - pinWidth;
+    var locationX = getRandomNumberInRange(minLocationX + pinWidth, maxLocationX - pinWidth);
     var locationY = getRandomNumberInRange(minLocationY - pinHeight, maxLocationY - pinHeight);
 
     mock.push({
