@@ -1,7 +1,6 @@
 'use strict';
 
-var totalNumber = 8;
-var mockAvatar = ['img/avatars/user01.png', 'img/avatars/user02.png', 'img/avatars/user03.png', 'img/avatars/user04.png', 'img/avatars/user05.png', 'img/avatars/user06.png', 'img/avatars/user07.png', 'img/avatars/user08.png'];
+var offersCount = 8;
 var mockTitle = ['Заголовок01', 'Заголовок02', 'Заголовок03', 'Заголовок04', 'Заголовок05', 'Заголовок06', 'Заголовок07', 'Заголовок08'];
 var mockType = ['palace', 'flat', 'house', 'bungalo'];
 var mockCheckin = ['12:00', '13:00', '14:00'];
@@ -9,9 +8,7 @@ var mockCheckout = ['12:00', '13:00', '14:00'];
 var mockFeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var mockDescription = ['Описание01', 'Описание02', 'Описание03', 'Описание04', 'Описание05', 'Описание06', 'Описание07', 'Описание08'];
 var mockPhotos = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-var minLocationX = 0;
 var minLocationY = 130;
-var maxLocationX = 1200;
 var maxLocationY = 630;
 var pinWidth = 50;
 var pinHeight = 70;
@@ -32,9 +29,10 @@ var shuffleArray = function (array) {
   return array;
 };
 
-var getMock = function () {
+var getMockOffer = function () {
   var mock = [];
-  for (var i = 0; i < totalNumber; i++) {
+  for (var i = 0; i < offersCount; i++) {
+    var avatar = 'img/avatars/user0' + (i + 1) + '.png';
     var title = mockTitle[getRandomNumberInRange(0, mockTitle.length)];
     var price = getRandomNumberInRange(100, 100000);
     var type = mockType[getRandomNumberInRange(0, mockType.length)];
@@ -45,12 +43,12 @@ var getMock = function () {
     var features = shuffleArray(mockFeatures).slice(0, getRandomNumberInRange(0, mockFeatures.length));
     var description = mockDescription[getRandomNumberInRange(0, mockDescription.length)];
     var photos = shuffleArray(mockPhotos).slice(0, getRandomNumberInRange(0, mockPhotos.length));
-    var locationX = getRandomNumberInRange(minLocationX + pinWidth, maxLocationX - pinWidth);
-    var locationY = getRandomNumberInRange(minLocationY - pinHeight, maxLocationY - pinHeight);
+    var locationX = getRandomNumberInRange(0, map.clientWidth);
+    var locationY = getRandomNumberInRange(minLocationY, maxLocationY);
 
     mock.push({
       author: {
-        avatar: mockAvatar[i],
+        avatar: avatar,
       },
       offer: {
         title: title,
@@ -81,7 +79,7 @@ var generatePin = function (pin) {
   var pinImage = pinElement.querySelector('img');
   var pinLocationX = pin.location.x;
   var pinLocationY = pin.location.y;
-  pinElement.style = 'left:' + pinLocationX + 'px; top:' + pinLocationY + 'px';
+  pinElement.style = 'left:' + (pinLocationX - pinWidth / 2) + 'px; top:' + (pinLocationY - pinHeight) + 'px';
   pinImage.src = pin.author.avatar;
   pinImage.alt = pin.offer.title;
   return pinElement;
@@ -89,8 +87,8 @@ var generatePin = function (pin) {
 
 var renderPins = function () {
   var fragment = document.createDocumentFragment();
-  var mock = getMock(totalNumber);
-  for (var i = 0; i < totalNumber; i++) {
+  var mock = getMockOffer(offersCount);
+  for (var i = 0; i < offersCount; i++) {
     fragment.appendChild(generatePin(mock[i]));
   }
   var mapPins = document.querySelector('.map__pins');
