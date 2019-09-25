@@ -11,6 +11,7 @@ var MAX_LOCATION_Y = 630;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 var PHOTOS_AMOUNT = 10;
+
 var getRandomNumberInRange = function (min, max) {
   return Math.floor(Math.random() * max) + min;
 };
@@ -29,7 +30,7 @@ var shuffleArray = function (array) {
 
 var getPhotos = function (arr) {
   var photos = [];
-  for (var i = 1; i <= arr; i++) {
+  for (var i = 1; i <= arr.length; i++) {
     photos.push('http://o0.github.io/assets/images/tokyo/hotel' + i + '.jpg');
   }
   return photos;
@@ -93,12 +94,12 @@ var generatePin = function (pin) {
 };
 
 var renderPins = function () {
+  var mapPins = document.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
   var mock = getMockOffer();
-  for (var i = 0; i < OFFERS_COUNT; i++) {
+  for (var i = 0; i < mock.length; i++) {
     fragment.appendChild(generatePin(mock[i]));
   }
-  var mapPins = document.querySelector('.map__pins');
   mapPins.appendChild(fragment);
 };
 
