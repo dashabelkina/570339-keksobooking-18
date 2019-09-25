@@ -1,18 +1,16 @@
 'use strict';
 
-var offersCount = 8;
-var mockTitles = ['Заголовок01', 'Заголовок02', 'Заголовок03', 'Заголовок04', 'Заголовок05', 'Заголовок06', 'Заголовок07', 'Заголовок08'];
-var mockTypes = ['palace', 'flat', 'house', 'bungalo'];
-var mockCheckins = ['12:00', '13:00', '14:00'];
-var mockCheckouts = ['12:00', '13:00', '14:00'];
-var mockFeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var mockDescriptions = ['Описание01', 'Описание02', 'Описание03', 'Описание04', 'Описание05', 'Описание06', 'Описание07', 'Описание08'];
-var mockPhotos = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var OFFERS_COUNT = 8;
+var OFFERS_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
+var CHECKINS = ['12:00', '13:00', '14:00'];
+var CHECKOUTS = ['12:00', '13:00', '14:00'];
+var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var MIN_LOCATION_Y = 130;
 var MAX_LOCATION_Y = 630;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
-
+var PHOTOS_AMOUNT = 10;
 var getRandomNumberInRange = function (min, max) {
   return Math.floor(Math.random() * max) + min;
 };
@@ -26,24 +24,32 @@ var shuffleArray = function (array) {
     array[j] = array[i];
     array[i] = temp;
   }
-  return array;
+  return array.slice(0, getRandomNumberInRange(0, array.length));
 };
+
+var getPhotos = function (arr) {
+  var photos = [];
+  for (var i = 1; i <= arr; i++) {
+    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + i + '.jpg');
+  }
+  return photos;
+};
+
+var userPhotos = getPhotos(PHOTOS_AMOUNT);
 
 var getMockOffer = function () {
   var mocks = [];
-
-  for (var i = 0; i < offersCount; i++) {
+  for (var i = 0; i < OFFERS_COUNT; i++) {
     var avatar = 'img/avatars/user0' + (i + 1) + '.png';
-    var title = mockTitles[getRandomNumberInRange(0, mockTitles.length)];
+    var title = OFFERS_TITLES[getRandomNumberInRange(0, OFFERS_TITLES.length)];
     var price = getRandomNumberInRange(100, 100000);
-    var type = mockTypes[getRandomNumberInRange(0, mockTypes.length)];
+    var type = OFFER_TYPES[getRandomNumberInRange(0, OFFER_TYPES.length)];
     var rooms = getRandomNumberInRange(1, 15);
     var guests = getRandomNumberInRange(1, 30);
-    var checkin = mockCheckins[getRandomNumberInRange(0, mockCheckins.length)];
-    var checkout = mockCheckins[getRandomNumberInRange(0, mockCheckouts.length)];
-    var features = shuffleArray(mockFeatures).slice(0, getRandomNumberInRange(0, mockFeatures.length));
-    var description = mockDescriptions[getRandomNumberInRange(0, mockDescriptions.length)];
-    var photos = shuffleArray(mockPhotos).slice(0, getRandomNumberInRange(0, mockPhotos.length));
+    var checkin = CHECKINS[getRandomNumberInRange(0, CHECKINS.length)];
+    var checkout = CHECKOUTS[getRandomNumberInRange(0, CHECKOUTS.length)];
+    var features = shuffleArray(FEATURES);
+    var photos = shuffleArray(userPhotos);
     var locationX = getRandomNumberInRange(0, map.clientWidth);
     var locationY = getRandomNumberInRange(MIN_LOCATION_Y, MAX_LOCATION_Y);
 
@@ -61,7 +67,7 @@ var getMockOffer = function () {
         checkin: checkin,
         checkout: checkout,
         features: features,
-        description: description,
+        description: 'Описание',
         photos: photos
       },
       location: {
@@ -88,8 +94,8 @@ var generatePin = function (pin) {
 
 var renderPins = function () {
   var fragment = document.createDocumentFragment();
-  var mock = getMockOffer(offersCount);
-  for (var i = 0; i < offersCount; i++) {
+  var mock = getMockOffer();
+  for (var i = 0; i < OFFERS_COUNT; i++) {
     fragment.appendChild(generatePin(mock[i]));
   }
   var mapPins = document.querySelector('.map__pins');
