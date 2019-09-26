@@ -10,7 +10,7 @@ var MIN_LOCATION_Y = 130;
 var MAX_LOCATION_Y = 630;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
-var PHOTOS_AMOUNT = 10;
+var PHOTOS_AMOUNT = 3;
 
 var getRandomNumberInRange = function (min, max) {
   return Math.floor(Math.random() * max) + min;
@@ -28,15 +28,14 @@ var shuffleArray = function (array) {
   return array.slice(0, getRandomNumberInRange(0, array.length));
 };
 
-var getPhotos = function (arr) {
+var getPhotos = function () {
   var photos = [];
-  for (var i = 0; i < arr.length; i++) {
-    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + (i + 1) + '.jpg');
+  var randomPhotos = getRandomNumberInRange(1, PHOTOS_AMOUNT);
+  for (var i = 1; i <= randomPhotos; i++) {
+    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + i + '.jpg');
   }
   return photos;
 };
-
-var userPhotos = getPhotos(PHOTOS_AMOUNT);
 
 var getMockOffer = function () {
   var mocks = [];
@@ -50,7 +49,7 @@ var getMockOffer = function () {
     var checkin = CHECKINS[getRandomNumberInRange(0, CHECKINS.length)];
     var checkout = CHECKOUTS[getRandomNumberInRange(0, CHECKOUTS.length)];
     var features = shuffleArray(FEATURES);
-    var photos = shuffleArray(userPhotos);
+    var photos = getPhotos(PHOTOS_AMOUNT);
     var locationX = getRandomNumberInRange(0, map.clientWidth);
     var locationY = getRandomNumberInRange(MIN_LOCATION_Y, MAX_LOCATION_Y);
 
@@ -138,6 +137,14 @@ var getOfferFeatures = function (features) {
   return cardFeatures;
 };
 
+var getOfferPhotos = function (photos) {
+  var cardPhotos = '';
+  for (var i = 0; i < photos.length; i++) {
+    cardPhotos += '<img src="' + photos[i] + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
+  }
+  return cardPhotos;
+};
+
 var generateOfferCard = function (offerCard) {
   var cardElement = cardTemplate.cloneNode(true);
 
@@ -149,7 +156,7 @@ var generateOfferCard = function (offerCard) {
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + offerCard.offer.checkin + ', выезд до ' + offerCard.offer.checkout;
   cardElement.querySelector('.popup__features').innerHTML = getOfferFeatures(offerCard.offer.features);
   cardElement.querySelector('.popup__description').textContent = offerCard.offer.description;
-  cardElement.querySelector('.popup__photos img').src = offerCard.offer.photos;
+  cardElement.querySelector('.popup__photos').innerHTML = getOfferPhotos(offerCard.offer.photos);
   cardElement.querySelector('.popup__avatar').setAttribute('src', offerCard.author.avatar);
 
   return cardElement;
