@@ -30,8 +30,8 @@ var shuffleArray = function (array) {
 
 var getPhotos = function (arr) {
   var photos = [];
-  for (var i = 1; i <= arr.length; i++) {
-    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + i + '.jpg');
+  for (var i = 0; i < arr.length; i++) {
+    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + (i + 1) + '.jpg');
   }
   return photos;
 };
@@ -60,7 +60,7 @@ var getMockOffer = function () {
       },
       offer: {
         title: title,
-        address: 'locationX, locationY',
+        address: locationX + ', ' + locationY,
         price: price,
         type: type,
         rooms: rooms,
@@ -93,8 +93,9 @@ var generatePin = function (pin) {
   return pinElement;
 };
 
+var mapPins = document.querySelector('.map__pins');
+
 var renderPins = function () {
-  var mapPins = document.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
   var mock = getMockOffer();
   for (var i = 0; i < mock.length; i++) {
@@ -107,3 +108,58 @@ var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 
 renderPins();
+
+var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+
+var OfferTypes = {
+  FLAT: 'Квартира',
+  BUNGALO: 'Бунгало',
+  HOUSE: 'Дом',
+  PALACE: 'Дворец',
+};
+
+var getDeclensionWordRoom = function (n, words) {
+  return words[(n % 100 > 4 && n % 100 < 20) ? 2 : [2, 0, 1, 1, 1, 2][Math.min(n % 10, 5)]];
+};
+var wordsRoom = [' комната', ' комнаты', ' комнат'];
+
+var getDeclensionWordGuest = function (n) {
+  if (n === 1) {
+    return ' гостя';
+  }
+  return ' гостей';
+};
+
+var getOfferFeatures = function (features) {
+  var cardFeatures = '';
+  for (var i = 0; i < features.length; i++) {
+    cardFeatures += '<li class="popup__feature popup__feature--' + features[i] + '"></li>';
+  }
+  return cardFeatures;
+};
+
+var generateOfferCard = function (offerCard) {
+  var cardElement = cardTemplate.cloneNode(true);
+
+  cardElement.querySelector('.popup__title').textContent = offerCard.offer.title;
+  cardElement.querySelector('.popup__text--address').textContent = offerCard.offer.address;
+  cardElement.querySelector('.popup__text--price').innerHTML = offerCard.offer.price + '&#x20bd;<span>/ночь</span>';
+  cardElement.querySelector('.popup__type').textContent = OfferTypes[offerCard.offer.type];
+  cardElement.querySelector('.popup__text--capacity').textContent = offerCard.offer.rooms + getDeclensionWordRoom(offerCard.offer.rooms, wordsRoom) + ' для ' + offerCard.offer.guests + getDeclensionWordGuest(offerCard.offer.guests);
+  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + offerCard.offer.checkin + ', выезд до ' + offerCard.offer.checkout;
+  cardElement.querySelector('.popup__features').innerHTML = getOfferFeatures(offerCard.offer.features);
+  cardElement.querySelector('.popup__description').textContent = offerCard.offer.description;
+  cardElement.querySelector('.popup__photos img').src = offerCard.offer.photos;
+  cardElement.querySelector('.popup__avatar').setAttribute('src', offerCard.author.avatar);
+
+  return cardElement;
+};
+
+var renderCard = function (offerCard) {
+  var mapFilter = map.querySelector('.map__filters-container');
+  var cardFragment = document.createDocumentFragment();
+  cardFragment.appendChild(generateOfferCard(offerCard[0]));
+  return map.insertBefore(cardFragment, mapFilter);
+};
+
+mapPins.appendChild(renderCard(getMockOffer()));
