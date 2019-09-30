@@ -168,7 +168,7 @@ var mapPinMain = document.querySelector('.map__pin--main');
 var adFormRoomsNumber = adForm.querySelector('#room_number');
 var adFormCapacity = adForm.querySelector('#capacity');
 // Функция для смены состояния элементов
-var reverseItemsState = function (arr, state) {
+var switchItemsState = function (arr, state) {
   for (var i = 0; i < arr.length; i++) {
     arr[i].disabled = state;
   }
@@ -187,8 +187,8 @@ var getCoordinatesPinMainPeak = function () {
 var activatePage = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  reverseItemsState(mapFilters, false);
-  reverseItemsState(adFormElements, false);
+  switchItemsState(mapFilters, false);
+  switchItemsState(adFormElements, false);
   generateOfferCard(objList[0]);
   renderPins(objList);
   address.value = getCoordinatesPinMain();
@@ -197,8 +197,8 @@ var activatePage = function () {
 var deactivatePage = function () {
   map.classList.add('map--faded');
   adForm.classList.add('ad-form--disabled');
-  reverseItemsState(mapFilters, true);
-  reverseItemsState(adFormElements, true);
+  switchItemsState(mapFilters, true);
+  switchItemsState(adFormElements, true);
   address.value = getCoordinatesPinMainPeak();
 };
 // Исходное состояние страницы
@@ -215,19 +215,19 @@ mapPinMain.addEventListener('keydown', function (evt) {
 });
 // Проверка соответствия количества гостей с количеством комнат
 var setRatioRoomsAndCapacity = function () {
-  var k = adFormRoomsNumber.value;
-  var j = adFormCapacity.value;
-  if (k < j) {
+  var rooms = adFormRoomsNumber.value;
+  var capacity = adFormCapacity.value;
+  if (rooms < capacity) {
     adFormCapacity.setCustomValidity('В тесноте, в духоте и на всех в обиде. Выберете больше комнат');
-  } else if (k >= j) {
+  } else if (rooms >= capacity) {
     adFormCapacity.setCustomValidity('');
   }
 };
 
-adFormRoomsNumber.addEventListener('input', function () {
+adFormRoomsNumber.addEventListener('change', function () {
   setRatioRoomsAndCapacity();
 });
 
-adFormCapacity.addEventListener('input', function () {
+adFormCapacity.addEventListener('change', function () {
   setRatioRoomsAndCapacity();
 });
