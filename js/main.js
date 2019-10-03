@@ -17,7 +17,14 @@ var OFFER_TYPES = {
   HOUSE: 'Дом',
   PALACE: 'Дворец',
 };
+var OFFER_PRICE = {
+  'bungalo': 0,
+  'flat': 1000,
+  'house': 5000,
+  'palace': 10000
+};
 var ENTER_KEYCODE = 13;
+var ESC_KEYCODE = 27;
 var wordsRoom = [' комната', ' комнаты', ' комнат'];
 
 var getRandomNumberInRange = function (min, max) {
@@ -97,6 +104,22 @@ var generatePin = function (pin) {
   pinElement.style = 'left:' + (pinLocationX - PIN_WIDTH / 2) + 'px; top:' + (pinLocationY - PIN_HEIGHT) + 'px';
   pinImage.src = pin.author.avatar;
   pinImage.alt = pin.offer.title;
+  // Открытие карточки объявления
+  var onMapCardClick = function () {
+    var mapCard = map.querySelector('.map__card');
+    if (mapCard) {
+      mapCard.remove();
+    }
+    generateOfferCard(pin);
+  };
+  // Открытие карточки по клику
+  pinElement.addEventListener('click', onMapCardClick);
+  // Открытие карточки по нажатию на клавишу Enter
+  pinElement.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      generateOfferCard(pin);
+    }
+  });
   return pinElement;
 };
 
@@ -156,6 +179,20 @@ var generateOfferCard = function (offerCards) {
 
   cardFragment.appendChild(cardElement);
   map.insertBefore(cardFragment, mapFilter);
+  // Закрытия карточки
+  var popupClose = document.querySelector('.popup__close');
+  var onPopupCloseClick = function () {
+    cardElement.remove();
+  };
+  // Закрытия карточки при клике по иконке
+  popupClose.addEventListener('click', onPopupCloseClick);
+  // Закрытия карточки по нажатию клавиши Esc
+  popupClose.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      onPopupCloseClick();
+    }
+  });
+  return cardElement;
 };
 
 var objList = getMockOffers(OFFERS_COUNT);
@@ -167,6 +204,12 @@ var mapPinMain = document.querySelector('.map__pin--main');
 var adFormRoomsNumber = adForm.querySelector('#room_number');
 var adFormCapacity = adForm.querySelector('#capacity');
 var adFormFieldsets = adForm.querySelectorAll('fieldset');
+var titleInput = adForm.querySelector('#title');
+var priceInput = adForm.querySelector('#price');
+var typeInput = adForm.querySelector('#type');
+var timein = adForm.querySelector('#timein');
+var timeout = adForm.querySelector('#timeout');
+
 // Функция для смены состояния элементов
 var switchItemsState = function (arr, state) {
   for (var i = 0; i < arr.length; i++) {
@@ -192,7 +235,6 @@ var activatePage = function () {
   });
   switchItemsState(mapFilters, false);
   switchItemsState(adFormElements, false);
-  generateOfferCard(objList[0]);
   renderPins(objList);
   address.value = getCoordinatesPinMain();
 };
@@ -236,3 +278,54 @@ adFormRoomsNumber.addEventListener('change', function () {
 adFormCapacity.addEventListener('change', function () {
   setRatioRoomsAndCapacity();
 });
+// Валидация формы
+// Заголовок объявления
+titleInput.addEventListener('invalid', function () {
+  switch (true) {
+    case titleInput.validity.tooShort:
+      titleInput.setCustomValidity('Заголовок должен состоять минимум из 30 символов');
+      break;
+    case titleInput.validity.tooLong:
+      titleInput.setCustomValidity('Заголовок не должен превышать 100 символов');
+      break;
+    case titleInput.validity.valueMissing:
+      titleInput.setCustomValidity('Обязательное поле');
+      break;
+    default:
+      titleInput.setCustomValidity('');
+  }
+});
+// Цена за ночь
+priceInput.addEventListener('invalid', function () {
+  var maxPrice = priceInput.max;
+  switch (true) {
+    case priceInput.validity.rangeOverflow:
+      priceInput.setCustomValidity('Максимальная цена не может быть больше ' + maxPrice);
+      break;
+    case priceInput.validity.valueMissing:
+      priceInput.setCustomValidity('Обязательное поле');
+      break;
+    default:
+      priceInput.setCustomValidity('');
+  }
+});
+// Поле «Тип жилья» влияет на минимальное значение поля «Цена за ночь»
+var onTypeAndPriceChange = function () {
+  priceInput.min = OFFER_PRICE[typeInput.value];
+  priceInput.placeholder = OFFER_PRICE[typeInput.value];
+};
+
+typeInput.addEventListener('change', onTypeAndPriceChange);
+// Поля «Время заезда» и «Время выезда» синхронизированы
+var setParTime = function (input, value) {
+  input.value = value;
+};
+var onTimeoutInputChange = function () {
+  setParTime(timein, timeout.value);
+};
+var onTimeinInputChange = function () {
+  setParTime(timeout, timein.value);
+};
+
+timein.addEventListener('change', onTimeinInputChange);
+timeout.addEventListener('change', onTimeoutInputChange);
