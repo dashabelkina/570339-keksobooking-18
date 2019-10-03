@@ -112,7 +112,6 @@ var renderPins = function () {
 };
 
 var map = document.querySelector('.map');
-// map.classList.remove('map--faded');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var mapFilter = map.querySelector('.map__filters-container');
 
@@ -167,6 +166,7 @@ var adFormElements = adForm.querySelectorAll('.ad-form__element');
 var mapPinMain = document.querySelector('.map__pin--main');
 var adFormRoomsNumber = adForm.querySelector('#room_number');
 var adFormCapacity = adForm.querySelector('#capacity');
+var adFormFieldsets = adForm.querySelectorAll('fieldset');
 // Функция для смены состояния элементов
 var switchItemsState = function (arr, state) {
   for (var i = 0; i < arr.length; i++) {
@@ -187,6 +187,9 @@ var getCoordinatesPinMainPeak = function () {
 var activatePage = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
+  adFormFieldsets.forEach(function (item) {
+    item.disabled = false;
+  });
   switchItemsState(mapFilters, false);
   switchItemsState(adFormElements, false);
   generateOfferCard(objList[0]);
@@ -197,12 +200,14 @@ var activatePage = function () {
 var deactivatePage = function () {
   map.classList.add('map--faded');
   adForm.classList.add('ad-form--disabled');
+  adFormFieldsets.forEach(function (item) {
+    item.disabled = true;
+  });
   switchItemsState(mapFilters, true);
   switchItemsState(adFormElements, true);
   address.value = getCoordinatesPinMainPeak();
 };
-// Исходное состояние страницы
-document.addEventListener('DOMContentLoaded', deactivatePage);
+deactivatePage();
 // Перевод страницы в активное состояние при клике, срабатывает один раз
 mapPinMain.addEventListener('mouseup', function () {
   activatePage();
