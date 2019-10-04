@@ -206,9 +206,9 @@ var adFormCapacity = adForm.querySelector('#capacity');
 var adFormFieldsets = adForm.querySelectorAll('fieldset');
 var titleInput = adForm.querySelector('#title');
 var priceInput = adForm.querySelector('#price');
-var typeInput = adForm.querySelector('#type');
-var timein = adForm.querySelector('#timein');
-var timeout = adForm.querySelector('#timeout');
+var typeSelect = adForm.querySelector('#type');
+var timeinSelect = adForm.querySelector('#timein');
+var timeoutSelect = adForm.querySelector('#timeout');
 
 // Функция для смены состояния элементов
 var switchItemsState = function (arr, state) {
@@ -311,21 +311,21 @@ priceInput.addEventListener('invalid', function () {
 });
 // Поле «Тип жилья» влияет на минимальное значение поля «Цена за ночь»
 var onTypeAndPriceChange = function () {
-  priceInput.min = OFFER_PRICE[typeInput.value];
-  priceInput.placeholder = OFFER_PRICE[typeInput.value];
+  priceInput.min = OFFER_PRICE[typeSelect.value];
+  priceInput.placeholder = OFFER_PRICE[typeSelect.value];
 };
 
-typeInput.addEventListener('change', onTypeAndPriceChange);
+typeSelect.addEventListener('change', onTypeAndPriceChange);
 // Поля «Время заезда» и «Время выезда» синхронизированы
 var setParTime = function (input, value) {
   input.value = value;
 };
 var onTimeoutInputChange = function () {
-  setParTime(timein, timeout.value);
+  setParTime(timeinSelect, timeoutSelect.value);
 };
 var onTimeinInputChange = function () {
-  setParTime(timeout, timein.value);
+  setParTime(timeoutSelect, timeinSelect.value);
 };
 
-timein.addEventListener('change', onTimeinInputChange);
-timeout.addEventListener('change', onTimeoutInputChange);
+timeinSelect.addEventListener('change', onTimeinInputChange);
+timeoutSelect.addEventListener('change', onTimeoutInputChange);
