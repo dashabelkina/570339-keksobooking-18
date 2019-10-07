@@ -106,22 +106,29 @@ var generatePin = function (pin) {
   pinImage.alt = pin.offer.title;
   // Открытие карточки объявления
   var onMapCardClick = function () {
-    var mapCard = map.querySelector('.map__card');
-    if (mapCard) {
-      mapCard.remove();
-    }
-    generateOfferCard(pin);
+    var mapCard = getOfferCard(pin);
+    hideMapCards(pin.offer.title);
+    mapCard.classList.toggle('hidden');
   };
   // Открытие карточки по клику
   pinElement.addEventListener('click', onMapCardClick);
-  // Открытие карточки по нажатию на клавишу Enter
-  pinElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      generateOfferCard(pin);
-    }
-  });
+
   return pinElement;
 };
+// Функция закрытия карточки. Находим не скрытое окно и добавляем класс hidden
+var hideMapCards = function (title) {
+  document.querySelectorAll('.map__card:not(.hidden)').forEach(function (element) {
+    if (!title || element.dataset.id !== title) {
+      element.classList.add('hidden');
+    }
+  });
+};
+// Закрываем окно по нажатию клавиши Esc
+window.addEventListener('keyup', function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    hideMapCards();
+  }
+});
 
 var mapPins = document.querySelector('.map__pins');
 
@@ -162,10 +169,17 @@ var getStringCapacity = function (rooms, guests) {
   return string;
 };
 
-var generateOfferCard = function (offerCards) {
-  var cardFragment = document.createDocumentFragment();
-  var cardElement = cardTemplate.cloneNode(true);
+var getOfferCard = function (offerCards) {
+  var cardElement = document.querySelector('[data-id="' + offerCards.offer.title + '"]');
+  if (cardElement) {
+    return cardElement;
+  } // Проверяем есть ли элемент в DOMе
 
+  var cardFragment = document.createDocumentFragment();
+  cardElement = cardTemplate.cloneNode(true);
+
+  cardElement.dataset.id = offerCards.offer.title; // Добавляем dataset.id чтобы потом найти нужную карточку
+  cardElement.classList.add('hidden'); // Сразу добавляем класс hidden, иначе не корректно срабатывает функция открытия карточки
   cardElement.querySelector('.popup__title').textContent = offerCards.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = offerCards.offer.address;
   cardElement.querySelector('.popup__text--price').innerHTML = offerCards.offer.price + '&#x20bd;<span>/ночь</span>';
@@ -179,19 +193,8 @@ var generateOfferCard = function (offerCards) {
 
   cardFragment.appendChild(cardElement);
   map.insertBefore(cardFragment, mapFilter);
-  // Закрытия карточки
-  var popupClose = document.querySelector('.popup__close');
-  var onPopupCloseClick = function () {
-    cardElement.remove();
-  };
-  // Закрытия карточки при клике по иконке
-  popupClose.addEventListener('click', onPopupCloseClick);
-  // Закрытия карточки по нажатию клавиши Esc
-  popupClose.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      onPopupCloseClick();
-    }
-  });
+  // Закрываем карточку при клике по иконке
+  cardElement.querySelector('.popup__close').addEventListener('click', hideMapCards);
   return cardElement;
 };
 
@@ -279,36 +282,30 @@ adFormCapacity.addEventListener('change', function () {
   setRatioRoomsAndCapacity();
 });
 // Валидация формы
-// Заголовок объявления
-titleInput.addEventListener('invalid', function () {
-  switch (true) {
-    case titleInput.validity.tooShort:
-      titleInput.setCustomValidity('Заголовок должен состоять минимум из 30 символов');
-      break;
-    case titleInput.validity.tooLong:
-      titleInput.setCustomValidity('Заголовок не должен превышать 100 символов');
-      break;
-    case titleInput.validity.valueMissing:
-      titleInput.setCustomValidity('Обязательное поле');
-      break;
-    default:
-      titleInput.setCustomValidity('');
-  }
-});
-// Цена за ночь
-priceInput.addEventListener('invalid', function () {
-  var maxPrice = priceInput.max;
-  switch (true) {
-    case priceInput.validity.rangeOverflow:
-      priceInput.setCustomValidity('Максимальная цена не может быть больше ' + maxPrice);
-      break;
-    case priceInput.validity.valueMissing:
-      priceInput.setCustomValidity('Обязательное поле');
-      break;
-    default:
-      priceInput.setCustomValidity('');
-  }
-});
+// Заголовок объявления и цена за ночь
+
+var validityMap = {
+  tooShort: 'Заголовок должен состоять минимум из 30 символов',
+  tooLong: 'Заголовок не должен превышать 100 символов',
+  valueMissing: 'Обязательное поле'
+};
+
+var validityInput = function (input) {
+  input.addEventListener('invalid', function () {
+    input.setCustomValidity('');
+    if (!input.validity.valid) {
+      for (var i in input.validity) {
+        if (input.validity[i] && validityMap[i]) {
+          input.setCustomValidity(validityMap[i]);
+        }
+      }
+    }
+  });
+};
+
+validityInput(titleInput);
+validityInput(priceInput);
+
 // Поле «Тип жилья» влияет на минимальное значение поля «Цена за ночь»
 var onTypeAndPriceChange = function () {
   priceInput.min = OFFER_PRICE[typeSelect.value];
