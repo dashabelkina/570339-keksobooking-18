@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 'use strict';
 
 (function () {
@@ -23,16 +22,14 @@
     pinImage.src = pin.author.avatar;
     pinImage.alt = pin.offer.title;
     // Открытие карточки объявления
-    var onMapCardClick = function () {
-      hideMapCards();
-      var mapCard = getOfferCard(pin);
-      mapCard.classList.remove('hidden');
-      pinElement.classList.add('map__pin--active');
-      window.form.setAddress(pinLocationX + ', ' + pinLocationY);
+    var onPinItemClick = function () {
+      var mapCardRemovable = map.querySelector('.map__card');
+      if (mapCardRemovable) {
+        mapCardRemovable.remove();
+      }
+      getOfferCard(pin);
     };
-    // Открытие карточки по клику
-    pinElement.addEventListener('click', onMapCardClick);
-
+    pinElement.addEventListener('click', onPinItemClick);
     return pinElement;
   };
   // Функция закрытия карточки
@@ -47,7 +44,7 @@
     }
   };
   // Закрываем окно по нажатию клавиши Esc
-  window.addEventListener('keyup', function (evt) {
+  document.addEventListener('keyup', function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
       hideMapCards();
     }
@@ -55,7 +52,7 @@
 
   var renderPins = function (data) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.data.length; i++) {
+    for (var i = 0; i < data.length; i++) {
       fragment.appendChild(generatePin(data[i]));
     }
     mapPins.appendChild(fragment);
@@ -65,36 +62,47 @@
   var photoTemplate = '<img src="{{x}}" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
 
   var getStringCapacity = function (rooms, guests) {
-    var string = rooms + ' ' + getDeclensionWord(rooms, wordsRoom) + ' для ' + guests + ' ' + getDeclensionWord(guests, wordsGuest);
+    var string = rooms + ' ' + window.utils.getDeclensionWord(rooms, wordsRoom) + ' для ' + guests + ' ' + window.utils.getDeclensionWord(guests, wordsGuest);
     return string;
   };
-
+  var onEscDown = function (evt, func) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      func();
+    }
+  };
   var getOfferCard = function (offerCards) {
-    var cardElement = document.querySelector('[data-id="' + offerCards.offer.id + '"]');
-    if (cardElement) {
-      return cardElement;
-    } // Проверяем есть ли элемент в DOMе
-
     var cardFragment = document.createDocumentFragment();
-    cardElement = cardTemplate.cloneNode(true);
+    var cardElement = cardTemplate.cloneNode(true);
 
-    cardElement.dataset.id = offerCards.offer.id; // Добавляем dataset.id чтобы потом найти нужную карточку
-    cardElement.classList.add('hidden'); // Сразу добавляем класс hidden, иначе не корректно срабатывает функция открытия карточки
     cardElement.querySelector('.popup__title').textContent = offerCards.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = offerCards.offer.address;
     cardElement.querySelector('.popup__text--price').innerHTML = offerCards.offer.price + '&#x20bd;<span>/ночь</span>';
     cardElement.querySelector('.popup__type').textContent = offerCards.offer.typeName;
     cardElement.querySelector('.popup__text--capacity').textContent = getStringCapacity(offerCards.offer.rooms, offerCards.offer.guests);
     cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + offerCards.offer.checkin + ', выезд до ' + offerCards.offer.checkout;
-    cardElement.querySelector('.popup__features').innerHTML = getTemplate(offerCards.offer.features, featureTemplate);
+    cardElement.querySelector('.popup__features').innerHTML = window.utils.getTemplate(offerCards.offer.features, featureTemplate);
     cardElement.querySelector('.popup__description').textContent = offerCards.offer.description;
-    cardElement.querySelector('.popup__photos').innerHTML = getTemplate(offerCards.offer.photos, photoTemplate);
+    cardElement.querySelector('.popup__photos').innerHTML = window.utils.getTemplate(offerCards.offer.photos, photoTemplate);
     cardElement.querySelector('.popup__avatar').setAttribute('src', offerCards.author.avatar);
 
     cardFragment.appendChild(cardElement);
     map.insertBefore(cardFragment, mapFilter);
-    // Закрываем карточку при клике по иконке
-    cardElement.querySelector('.popup__close').addEventListener('click', hideMapCards);
+
+    var closeCardBtn = cardElement.querySelector('.popup__close');
+    var closeCard = function () {
+      cardElement.remove();
+      closeCardBtn.removeEventListener('click', onCloseCardClick);
+      document.removeEventListener('keydown', onCardEscDown);
+    };
+    var onCloseCardClick = function () {
+      closeCard();
+    };
+    closeCardBtn.addEventListener('click', onCloseCardClick);
+    var onCardEscDown = function (evt) {
+      onEscDown(evt, closeCard);
+    };
+    document.addEventListener('keydown', onCardEscDown);
+
     return cardElement;
   };
 

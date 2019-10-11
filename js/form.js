@@ -9,7 +9,6 @@
   };
 
   var adForm = document.querySelector('.ad-form');
-  var address = adForm.querySelector('#address');
   var mapFilters = document.querySelector('.map__filters');
   var adFormElements = adForm.querySelectorAll('.ad-form__element');
   var adFormRoomsNumber = adForm.querySelector('#room_number');
@@ -39,18 +38,14 @@
     }
   };
 
-  adFormRoomsNumber.addEventListener('change', function () {
-    setRatioRoomsAndCapacity();
-  });
-
-  adFormCapacity.addEventListener('change', function () {
-    setRatioRoomsAndCapacity();
-  });
+  adFormRoomsNumber.addEventListener('change', setRatioRoomsAndCapacity);
+  adFormCapacity.addEventListener('change', setRatioRoomsAndCapacity);
 
   // Поле «Тип жилья» влияет на минимальное значение поля «Цена за ночь»
   var onTypeAndPriceChange = function () {
-    priceInput.min = OFFER_PRICE[typeSelect.value];
-    priceInput.placeholder = OFFER_PRICE[typeSelect.value];
+    var priceValue = OFFER_PRICE[typeSelect.value];
+    priceInput.min = priceValue;
+    priceInput.placeholder = priceValue;
   };
 
   typeSelect.addEventListener('change', onTypeAndPriceChange);
@@ -91,34 +86,29 @@
   validityInput(titleInput);
   validityInput(priceInput);
 
-  var disableForm = function (pinCoords) {
+  var disableForm = function () {
     switchItemsState(mapFilters, true);
     switchItemsState(adFormElements, true);
+    switchItemsState(adFormFieldsets, true);
     adForm.classList.add('ad-form--disabled');
-    adFormFieldsets.forEach(function (item) {
-      item.disabled = true;
-    });
-    address.value = pinCoords;
   };
 
-  var enableForm = function (pinCoords) {
+  var enableForm = function () {
     switchItemsState(mapFilters, false);
     switchItemsState(adFormElements, false);
+    switchItemsState(adFormFieldsets, false);
     adForm.classList.remove('ad-form--disabled');
-    adFormFieldsets.forEach(function (item) {
-      item.disabled = false;
-    });
-    address.value = pinCoords;
   };
 
-  var setPinAddress = function (coords) {
-    address.value = coords;
+  var toggleForm = function (isActive) {
+    disableForm();
+    if (isActive) {
+      enableForm();
+    }
   };
 
   window.form = {
-    disable: disableForm,
-    enable: enableForm,
-    setAddress: setPinAddress
+    adForm: adForm,
+    toggleForm: toggleForm
   };
-
 })();

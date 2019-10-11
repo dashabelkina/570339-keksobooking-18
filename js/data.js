@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 'use strict';
 (function () {
   var OFFERS_COUNT = 8;
@@ -19,7 +18,7 @@
 
   var getPhotos = function () {
     var photos = [];
-    var randomPhotos = getRandomNumberInRange(1, PHOTOS_AMOUNT);
+    var randomPhotos = window.utils.getRandomNumberInRange(1, PHOTOS_AMOUNT);
     for (var i = 1; i <= randomPhotos; i++) {
       photos.push('http://o0.github.io/assets/images/tokyo/hotel' + i + '.jpg');
     }
@@ -30,24 +29,23 @@
     var mocks = [];
     for (var i = 0; i < OFFERS_COUNT; i++) {
       var avatar = 'img/avatars/user0' + (i + 1) + '.png';
-      var title = OFFERS_TITLES[getRandomNumberInRange(0, OFFERS_TITLES.length)];
-      var price = getRandomNumberInRange(100, 100000);
-      var type = OFFER_TYPES[getRandomNumberInRange(0, OFFER_TYPES.length)];
-      var rooms = getRandomNumberInRange(1, 15);
-      var guests = getRandomNumberInRange(1, 30);
-      var checkin = CHECKINS[getRandomNumberInRange(0, CHECKINS.length)];
-      var checkout = CHECKOUTS[getRandomNumberInRange(0, CHECKOUTS.length)];
-      var features = shuffleArray(FEATURES);
+      var title = OFFERS_TITLES[window.utils.getRandomNumberInRange(0, OFFERS_TITLES.length)];
+      var price = window.utils.getRandomNumberInRange(100, 100000);
+      var type = OFFER_TYPES[window.utils.getRandomNumberInRange(0, OFFER_TYPES.length)];
+      var rooms = window.utils.getRandomNumberInRange(1, 15);
+      var guests = window.utils.getRandomNumberInRange(1, 30);
+      var checkin = CHECKINS[window.utils.getRandomNumberInRange(0, CHECKINS.length)];
+      var checkout = CHECKOUTS[window.utils.getRandomNumberInRange(0, CHECKOUTS.length)];
+      var features = window.utils.shuffleArray(FEATURES);
       var photos = getPhotos(PHOTOS_AMOUNT);
-      var locationX = getRandomNumberInRange(0, CLIENT_WIDTH);
-      var locationY = getRandomNumberInRange(MIN_LOCATION_Y, MAX_LOCATION_Y);
+      var locationX = window.utils.getRandomNumberInRange(0, CLIENT_WIDTH);
+      var locationY = window.utils.getRandomNumberInRange(MIN_LOCATION_Y, MAX_LOCATION_Y);
 
       mocks.push({
         author: {
           avatar: avatar,
         },
         offer: {
-          id: Math.random(),
           title: title,
           address: locationX + ', ' + locationY,
           price: price,
@@ -71,6 +69,6 @@
   };
 
   window.data = {
-    generate: getMockOffers
+    getMockOffers: getMockOffers
   };
 })();
