@@ -107,6 +107,7 @@
   };
 
   window.cards = {
-    renderPins: renderPins
+    renderPins: renderPins,
+    onEscDown: onEscDown
   };
 })();

@@ -29,7 +29,7 @@
   };
 
   var onLoadError = function (errorText) {
-    window.utils.getErrorMessage(errorText);
+    window.error.getErrorMessage(errorText);
   };
 
   // Активное состояние страницы
