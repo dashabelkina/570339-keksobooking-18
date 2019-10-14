@@ -27,11 +27,26 @@
     }
     return result;
   };
+  // Сообщение об ошибке
+  var getErrorMessage = function (errorMessage) {
+    var node = document.createElement('div');
+    node.classList.add('error-message');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: #ff5635;';
+    node.style.position = 'relative';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '25px';
+    node.style.lineHeight = '65px';
+    node.style.color = 'white';
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
 
   window.utils = {
     getRandomNumberInRange: getRandomNumberInRange,
     shuffleArray: shuffleArray,
     getDeclensionWord: getDeclensionWord,
-    getTemplate: getTemplate
+    getTemplate: getTemplate,
+    getErrorMessage: getErrorMessage
   };
 })();
