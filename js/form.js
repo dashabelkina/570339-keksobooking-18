@@ -26,6 +26,7 @@
       arr[i].disabled = state;
     }
   };
+
   // Проверка соответствия количества гостей с количеством комнат
   var setRatioRoomsAndCapacity = function () {
     var rooms = adFormRoomsNumber.value;
