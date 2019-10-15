@@ -106,6 +106,27 @@
       enableForm();
     }
   };
+  // Действие при успешной отправке формы
+  var formSubmitSuccessHandler = function () {
+    window.success.getSuccessMessage();
+    disableForm();
+    window.map.map.classList.add('map--faded');
+    window.cards.removePins();
+    adForm.reset();
+    window.map.mapPinMainStartPosition();
+  };
+  // Сообщение об ошибке при отправке данных
+  var formSubmitErrorHandler = function (errorMessage) {
+    window.error.getErrorMessage(errorMessage);
+  };
+
+  var formSubmitHandler = function (evt) {
+    evt.preventDefault(); // Отменяем действие формы по умолчанию
+    var data = new FormData(adForm); // Данные, которые будем передавать
+    window.backend.upload(formSubmitSuccessHandler, formSubmitErrorHandler, data);
+  };
+  // Обработчик отправки формы
+  adForm.addEventListener('submit', formSubmitHandler);
 
   window.form = {
     adForm: adForm,
