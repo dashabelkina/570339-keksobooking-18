@@ -60,7 +60,6 @@
 
   // Функция удаления пинов
   var removePins = function () {
-    hideMapCards();
     var pinsBtn = document.querySelectorAll('.map__pin[type=button]');
     for (var i = 0; i < pinsBtn.length; i++) {
       pinsBtn[i].remove();
