@@ -32,9 +32,10 @@
     var rooms = adFormRoomsNumber.value;
     var capacity = adFormCapacity.value;
     if (rooms < capacity) {
-      adFormCapacity.setCustomValidity('В тесноте, в духоте и на всех в обиде. Выберете больше комнат');
-    } else if (rooms >= capacity) {
+      adFormRoomsNumber.setCustomValidity('В тесноте, в духоте и на всех в обиде. Выберете больше комнат');
+    } else {
       adFormCapacity.setCustomValidity('');
+      adFormRoomsNumber.setCustomValidity('');
     }
   };
 
@@ -84,7 +85,11 @@
   };
 
   validityInput(titleInput);
-  validityInput(priceInput);
+
+  priceInput.addEventListener('change', function () {
+    onTypeAndPriceChange();
+    validityInput(priceInput);
+  });
 
   var disableForm = function () {
     switchItemsState(mapFilters, true);
