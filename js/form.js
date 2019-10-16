@@ -31,10 +31,19 @@
   var setRatioRoomsAndCapacity = function () {
     var rooms = adFormRoomsNumber.value;
     var capacity = adFormCapacity.value;
-    if (rooms < capacity) {
-      adFormCapacity.setCustomValidity('В тесноте, в духоте и на всех в обиде. Выберете больше комнат');
-    } else if (rooms >= capacity) {
-      adFormCapacity.setCustomValidity('');
+    switch (true) {
+      case +rooms === 100 && +capacity !== 0:
+        adFormCapacity.setCustomValidity('Этот вариант не для гостей');
+        break;
+      case +capacity === 0 && +rooms !== 100:
+        adFormRoomsNumber.setCustomValidity('Можно выбрать только 100 комнат');
+        break;
+      case +rooms < +capacity && +capacity !== 0:
+        adFormRoomsNumber.setCustomValidity('В тесноте, в духоте и на всех в обиде. Выберете больше комнат');
+        break;
+      default:
+        adFormCapacity.setCustomValidity('');
+        adFormRoomsNumber.setCustomValidity('');
     }
   };
 
@@ -84,7 +93,11 @@
   };
 
   validityInput(titleInput);
-  validityInput(priceInput);
+
+  priceInput.addEventListener('change', function () {
+    onTypeAndPriceChange();
+    validityInput(priceInput);
+  });
 
   var disableForm = function () {
     switchItemsState(mapFilters, true);
@@ -106,6 +119,27 @@
       enableForm();
     }
   };
+  // Действие при успешной отправке формы
+  var formSubmitSuccessHandler = function () {
+    window.success.getSuccessMessage();
+    disableForm();
+    window.map.map.classList.add('map--faded');
+    window.cards.removePins();
+    adForm.reset();
+    window.map.mapPinMainStartPosition();
+  };
+  // Сообщение об ошибке при отправке данных
+  var formSubmitErrorHandler = function (errorMessage) {
+    window.error.getErrorMessage(errorMessage);
+  };
+
+  var formSubmitHandler = function (evt) {
+    evt.preventDefault(); // Отменяем действие формы по умолчанию
+    var data = new FormData(adForm); // Данные, которые будем передавать
+    window.backend.upload(formSubmitSuccessHandler, formSubmitErrorHandler, data);
+  };
+  // Обработчик отправки формы
+  adForm.addEventListener('submit', formSubmitHandler);
 
   window.form = {
     adForm: adForm,

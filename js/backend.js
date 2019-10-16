@@ -1,6 +1,7 @@
 'use strict';
 (function () {
-  var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
+  var BASE_URL = 'https://js.dump.academy/keksobooking';
+  var LOAD_URL = BASE_URL + '/data';
   var TIMEOUT = 10000;
   var ErrorText = {
     BAD_REQUEST: 'Неверный запрос.',
@@ -47,10 +48,15 @@
   };
 
   var load = function (onSuccess, onError) {
-    createXhr('GET', URL_LOAD, onSuccess, onError).send(); // Делаем запрос и принимаем данные с сервера
+    createXhr('GET', LOAD_URL, onSuccess, onError).send(); // Делаем запрос и принимаем данные с сервера
+  };
+
+  var upload = function (onSuccess, onError, data) {
+    createXhr('POST', BASE_URL, onSuccess, onError).send(data); // Загружаем данные на сервер. data – объект с данными, которые необходимо отправить
   };
 
   window.backend = {
-    load: load
+    load: load,
+    upload: upload
   };
 })();

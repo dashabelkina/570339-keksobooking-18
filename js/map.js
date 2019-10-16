@@ -20,6 +20,11 @@
     }
     return mapPinPosition;
   };
+  // Координаты главного пина по умолчанию
+  var getMapPinMainStartPosition = function () {
+    mapPinMain.style.left = pinMainX + 'px';
+    mapPinMain.style.top = pinDeactivateMainY + 'px';
+  };
 
   setAddressInInput(false);
   window.form.toggleForm(false);
@@ -42,16 +47,19 @@
   // Перевод страницы в активное состояние при клике, срабатывает один раз
   mapPinMain.addEventListener('mouseup', function () {
     activatePage();
-  }, {once: true});
+  });
   // Перевод страницы в активное состояние при нажатии Enter
   mapPinMain.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
       activatePage();
     }
-  }, {once: true});
+  });
 
   window.map = {
     mapPinMain: mapPinMain,
-    PIN_PEAK_HEIGHT: PIN_PEAK_HEIGHT
+    PIN_PEAK_HEIGHT: PIN_PEAK_HEIGHT,
+    map: map,
+    setAddressInInput: setAddressInInput,
+    mapPinMainStartPosition: getMapPinMainStartPosition
   };
 })();

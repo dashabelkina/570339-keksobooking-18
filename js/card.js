@@ -58,6 +58,14 @@
     mapPins.appendChild(fragment);
   };
 
+  // Функция удаления пинов
+  var removePins = function () {
+    var pinsBtn = document.querySelectorAll('.map__pin[type=button]');
+    for (var i = 0; i < pinsBtn.length; i++) {
+      pinsBtn[i].remove();
+    }
+  };
+
   var featureTemplate = '<li class="popup__feature popup__feature--{{x}}"></li>';
   var photoTemplate = '<img src="{{x}}" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
 
@@ -108,6 +116,7 @@
 
   window.cards = {
     renderPins: renderPins,
+    removePins: removePins,
     onEscDown: onEscDown
   };
 })();
