@@ -31,11 +31,19 @@
   var setRatioRoomsAndCapacity = function () {
     var rooms = adFormRoomsNumber.value;
     var capacity = adFormCapacity.value;
-    if (rooms < capacity) {
-      adFormRoomsNumber.setCustomValidity('В тесноте, в духоте и на всех в обиде. Выберете больше комнат');
-    } else {
-      adFormCapacity.setCustomValidity('');
-      adFormRoomsNumber.setCustomValidity('');
+    switch (true) {
+      case +rooms === 100 && +capacity !== 0:
+        adFormCapacity.setCustomValidity('Этот вариант не для гостей');
+        break;
+      case +capacity === 0 && +rooms !== 100:
+        adFormRoomsNumber.setCustomValidity('Можно выбрать только 100 комнат');
+        break;
+      case +rooms < +capacity && +capacity !== 0:
+        adFormRoomsNumber.setCustomValidity('В тесноте, в духоте и на всех в обиде. Выберете больше комнат');
+        break;
+      default:
+        adFormCapacity.setCustomValidity('');
+        adFormRoomsNumber.setCustomValidity('');
     }
   };
 
