@@ -9,7 +9,6 @@
   var pinMainX = Math.round(parseInt(mapPinMain.style.left, 10));
   var pinMainY = Math.round(parseInt(mapPinMain.style.top, 10) + PIN_PEAK_HEIGHT);
   var pinDeactivateMainY = Math.round(parseInt(mapPinMain.style.top, 10));
-  var data = window.data.getMockOffers();
 
   var setAddressInInput = function (isActive) {
     var addressInput = window.form.adForm.querySelector('input[name="address"]');
@@ -29,8 +28,9 @@
   setAddressInInput(false);
   window.form.toggleForm(false);
 
-  var onLoadSuccess = function () {
-    window.cards.renderPins(data);
+  var onLoadSuccess = function (data) {
+    window.cards.setData(data);
+    window.cards.renderPins();
   };
 
   var onLoadError = function (errorText) {
