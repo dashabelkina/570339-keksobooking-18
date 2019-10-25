@@ -16,6 +16,15 @@
     PALACE: 'Дворец',
   };
 
+  var onLoadSuccess = function (data) {
+    window.cards.setData(data);
+    window.cards.renderPins();
+  };
+
+  var onLoadError = function (errorText) {
+    window.error.getErrorMessage(errorText);
+  };
+
   var getPhotos = function () {
     var photos = [];
     var randomPhotos = window.utils.getRandomNumberInRange(1, PHOTOS_AMOUNT);
@@ -69,6 +78,8 @@
   };
 
   window.data = {
-    getMockOffers: getMockOffers
+    getMockOffers: getMockOffers,
+    onLoadSuccess: onLoadSuccess,
+    onLoadError: onLoadError
   };
 })();

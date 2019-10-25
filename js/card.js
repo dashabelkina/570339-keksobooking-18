@@ -56,9 +56,8 @@
   });
   // Если применен фильтр – фильтруем объявления, иначе возвращаем все доступные, но не больше пяти в обоих случаях.
   var renderPins = function (filter) {
-    removePins();
-    removeCards();
-    var data = filter ? window.filter.apply(pinsData) : pinsData;
+    removeItems('.map__card');
+    var data = filter ? window.filter.filterAds(pinsData) : pinsData;
     var fragment = document.createDocumentFragment();
     var min = Math.min(data.length, PINS_COUNT);
     for (var i = 0; i < min; i++) {
@@ -66,21 +65,12 @@
     }
     mapPins.appendChild(fragment);
   };
-
-  // Удаление карточек
-  var removeCards = function () {
-    var cards = document.querySelectorAll('.map__card');
-    cards.forEach(function (it) {
-      window.map.map.removeChild(it);
+  // Функция удаления карточек и меток
+  var removeItems = function (selector) {
+    var item = document.querySelectorAll(selector);
+    item.forEach(function (it) {
+      it.remove();
     });
-  };
-
-  // Функция удаления пинов
-  var removePins = function () {
-    var pinsBtn = document.querySelectorAll('.map__pin[type=button]');
-    for (var i = 0; i < pinsBtn.length; i++) {
-      pinsBtn[i].remove();
-    }
   };
 
   var featureTemplate = '<li class="popup__feature popup__feature--{{x}}"></li>';
@@ -134,7 +124,7 @@
   window.cards = {
     setData: setData,
     renderPins: renderPins,
-    removePins: removePins,
-    onEscDown: onEscDown
+    onEscDown: onEscDown,
+    removeItems: removeItems
   };
 })();

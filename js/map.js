@@ -28,18 +28,12 @@
   setAddressInInput(false);
   window.form.toggleForm(false);
 
-  var onLoadSuccess = function (data) {
-    window.cards.setData(data);
-    window.cards.renderPins();
-  };
-
-  var onLoadError = function (errorText) {
-    window.error.getErrorMessage(errorText);
-  };
-
   // Активное состояние страницы
   var activatePage = function () {
-    window.backend.load(onLoadSuccess, onLoadError);
+    if (!map.classList.contains('map--faded')) {
+      return;
+    }
+    window.backend.load(window.data.onLoadSuccess, window.data.onLoadError);
     map.classList.remove('map--faded');
     window.form.toggleForm(true);
     setAddressInInput(true);
