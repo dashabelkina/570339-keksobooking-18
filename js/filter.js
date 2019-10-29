@@ -8,21 +8,22 @@
     features: [],
   };
 
-  var fieldHousingType = document.querySelector('#housing-type');
-  var fieldHousingPrice = document.querySelector('#housing-price');
-  var fieldHousingRooms = document.querySelector('#housing-rooms');
-  var fieldHousingGuests = document.querySelector('#housing-guests');
-  var fieldFeatures = document.querySelector('#housing-features');
+  var price = {
+    min: 10000,
+    max: 50000
+  };
+
+  var mapFilter = document.querySelector('.map__filters');
   // Отрисовка меток с учетом фильтра
   var updateFilter = window.debounce(function (e) {
-    window.cards.removeItems('.map__pin[type=button]');
+    window.cards.removeElements('.map__pin[type=button]');
     var target = e.target;
-    filter[target.dataset.name] = target.value;
+    filter[target.dataset.filterType] = target.value;
     window.cards.renderPins(filter);
   });
   // Отрисовка меток с учетом фильтра удобств
   var updateFilterFeatures = window.debounce(function (e) {
-    window.cards.removeItems('.map__pin[type=button]');
+    window.cards.removeElements('.map__pin[type=button]');
     var target = e.target;
     filter.features = target.checked ?
       filter.features.concat(target.value) :
@@ -38,9 +39,9 @@
   // Условия фильтрации по цене
   var filterPrice = function (el) {
     return filter.price === 'any' ||
-      filter.price === 'low' && el.offer.price < 10000 ||
-      filter.price === 'middle' && el.offer.price < 50000 && el.offer.price >= 10000 ||
-      filter.price === 'high' && el.offer.price >= 50000;
+      filter.price === 'low' && el.offer.price < price.min ||
+      filter.price === 'middle' && el.offer.price < price.max && el.offer.price >= price.min ||
+      filter.price === 'high' && el.offer.price >= price.max;
   };
   // Условия фильтрации по числу комнат
   var filterRooms = function (el) {
@@ -62,18 +63,19 @@
   };
 
   // Подписываемся на события изменения фильтра
-  fieldHousingType.addEventListener('change', updateFilter);
-  fieldHousingPrice.addEventListener('change', updateFilter);
-  fieldHousingRooms.addEventListener('change', updateFilter);
-  fieldHousingGuests.addEventListener('change', updateFilter);
-  fieldFeatures.addEventListener('change', updateFilterFeatures);
+  var changeForm = function (e) {
+    if (e.target.tagName === 'SELECT') {
+      updateFilter(e);
+    }
+    if (e.target.tagName === 'INPUT') {
+      updateFilterFeatures(e);
+    }
+  };
+
+  mapFilter.addEventListener('change', changeForm);
 
   var deactivateFilter = function () {
-    fieldHousingType.removeEventListener('change', updateFilter);
-    fieldHousingPrice.removeEventListener('change', updateFilter);
-    fieldHousingRooms.removeEventListener('change', updateFilter);
-    fieldHousingGuests.removeEventListener('change', updateFilter);
-    fieldFeatures.removeEventListener('change', updateFilterFeatures);
+    mapFilter.removeEventListener('change', changeForm);
   };
 
   window.filter = {

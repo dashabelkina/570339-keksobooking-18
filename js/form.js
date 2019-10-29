@@ -124,8 +124,8 @@
     window.success.getSuccessMessage();
     disableForm();
     window.map.map.classList.add('map--faded');
-    window.cards.removeItems('.map__pin[type=button]');
-    window.cards.removeItems('.map__card');
+    window.cards.removeElements('.map__pin[type=button]');
+    window.cards.removeElements('.map__card');
     mapFilters.reset();
     adForm.reset();
     window.filter.deactivateFilter();
