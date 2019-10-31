@@ -16,14 +16,14 @@
   var mapFilter = document.querySelector('.map__filters');
   // Отрисовка меток с учетом фильтра
   var updateFilter = window.debounce(function (e) {
-    window.cards.removeElements('.map__pin[type=button]');
+    window.utils.removeElements('.map__pin[type=button]');
     var target = e.target;
     filter[target.dataset.filterType] = target.value;
     window.cards.renderPins(filter);
   });
   // Отрисовка меток с учетом фильтра удобств
   var updateFilterFeatures = window.debounce(function (e) {
-    window.cards.removeElements('.map__pin[type=button]');
+    window.utils.removeElements('.map__pin[type=button]');
     var target = e.target;
     filter.features = target.checked ?
       filter.features.concat(target.value) :

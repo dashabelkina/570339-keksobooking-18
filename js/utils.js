@@ -28,10 +28,18 @@
     return result;
   };
 
+  var removeElements = function (selector) {
+    var elements = document.querySelectorAll(selector);
+    elements.forEach(function (it) {
+      it.remove();
+    });
+  };
+
   window.utils = {
     getRandomNumberInRange: getRandomNumberInRange,
     shuffleArray: shuffleArray,
     getDeclensionWord: getDeclensionWord,
-    getTemplate: getTemplate
+    getTemplate: getTemplate,
+    removeElements: removeElements
   };
 })();
