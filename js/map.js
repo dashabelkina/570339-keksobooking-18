@@ -9,7 +9,6 @@
   var pinMainX = Math.round(parseInt(mapPinMain.style.left, 10));
   var pinMainY = Math.round(parseInt(mapPinMain.style.top, 10) + PIN_PEAK_HEIGHT);
   var pinDeactivateMainY = Math.round(parseInt(mapPinMain.style.top, 10));
-  var data = window.data.getMockOffers();
 
   var setAddressInInput = function (isActive) {
     var addressInput = window.form.adForm.querySelector('input[name="address"]');
@@ -29,17 +28,12 @@
   setAddressInInput(false);
   window.form.toggleForm(false);
 
-  var onLoadSuccess = function () {
-    window.cards.renderPins(data);
-  };
-
-  var onLoadError = function (errorText) {
-    window.error.getErrorMessage(errorText);
-  };
-
   // Активное состояние страницы
   var activatePage = function () {
-    window.backend.load(onLoadSuccess, onLoadError);
+    if (!map.classList.contains('map--faded')) {
+      return;
+    }
+    window.backend.load(window.data.onLoadSuccess, window.data.onLoadError);
     map.classList.remove('map--faded');
     window.form.toggleForm(true);
     setAddressInInput(true);

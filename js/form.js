@@ -124,8 +124,11 @@
     window.success.getSuccessMessage();
     disableForm();
     window.map.map.classList.add('map--faded');
-    window.cards.removePins();
+    window.cards.removeElements('.map__pin[type=button]');
+    window.cards.removeElements('.map__card');
+    mapFilters.reset();
     adForm.reset();
+    window.filter.deactivateFilter();
     window.map.mapPinMainStartPosition();
   };
   // Сообщение об ошибке при отправке данных

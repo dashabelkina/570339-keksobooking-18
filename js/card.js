@@ -4,14 +4,19 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
   var ESC_KEYCODE = 27;
-
+  var PINS_COUNT = 5;
   var wordsRoom = [' комната', ' комнаты', ' комнат'];
   var wordsGuest = [' гостя', ' гостей', ' гостей'];
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  var map = document.querySelector('.map');
-  var mapFilter = map.querySelector('.map__filters-container');
+  var mapFilter = document.querySelector('.map__filters-container');
   var mapPins = document.querySelector('.map__pins');
+  // Данные, которые мы получаем с сервера
+  var pinsData;
+
+  var setData = function (data) {
+    pinsData = data;
+  };
 
   var generatePin = function (pin) {
     var pinElement = pinTemplate.cloneNode(true);
@@ -23,7 +28,7 @@
     pinImage.alt = pin.offer.title;
     // Открытие карточки объявления
     var onPinItemClick = function () {
-      var mapCardRemovable = map.querySelector('.map__card');
+      var mapCardRemovable = window.map.map.querySelector('.map__card');
       if (mapCardRemovable) {
         mapCardRemovable.remove();
       }
@@ -49,21 +54,23 @@
       hideMapCards();
     }
   });
-
-  var renderPins = function (data) {
+  // Если применен фильтр – фильтруем объявления, иначе возвращаем все доступные, но не больше пяти в обоих случаях.
+  var renderPins = function (filter) {
+    removeElements('.map__card');
+    var data = filter ? window.filter.filterAds(pinsData) : pinsData;
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < data.length; i++) {
+    var min = Math.min(data.length, PINS_COUNT);
+    for (var i = 0; i < min; i++) {
       fragment.appendChild(generatePin(data[i]));
     }
     mapPins.appendChild(fragment);
   };
-
-  // Функция удаления пинов
-  var removePins = function () {
-    var pinsBtn = document.querySelectorAll('.map__pin[type=button]');
-    for (var i = 0; i < pinsBtn.length; i++) {
-      pinsBtn[i].remove();
-    }
+  // Функция удаления карточек и меток
+  var removeElements = function (selector) {
+    var elements = document.querySelectorAll(selector);
+    elements.forEach(function (it) {
+      it.remove();
+    });
   };
 
   var featureTemplate = '<li class="popup__feature popup__feature--{{x}}"></li>';
@@ -94,7 +101,7 @@
     cardElement.querySelector('.popup__avatar').setAttribute('src', offerCards.author.avatar);
 
     cardFragment.appendChild(cardElement);
-    map.insertBefore(cardFragment, mapFilter);
+    window.map.map.insertBefore(cardFragment, mapFilter);
 
     var closeCardBtn = cardElement.querySelector('.popup__close');
     var closeCard = function () {
@@ -115,8 +122,9 @@
   };
 
   window.cards = {
+    setData: setData,
     renderPins: renderPins,
-    removePins: removePins,
-    onEscDown: onEscDown
+    onEscDown: onEscDown,
+    removeElements: removeElements
   };
 })();
