@@ -11,7 +11,9 @@
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var mapFilter = document.querySelector('.map__filters-container');
   var mapPins = document.querySelector('.map__pins');
-  // Данные, которые мы получаем с сервера
+  var featureTemplate = '<li class="popup__feature popup__feature--{{x}}"></li>';
+  var photoTemplate = '<img src="{{x}}" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
+
   var pinsData;
 
   var setData = function (data) {
@@ -26,7 +28,7 @@
     pinElement.style = 'left:' + (pinLocationX - PIN_WIDTH / 2) + 'px; top:' + (pinLocationY - PIN_HEIGHT) + 'px';
     pinImage.src = pin.author.avatar;
     pinImage.alt = pin.offer.title;
-    // Открытие карточки объявления
+
     var onPinItemClick = function () {
       var mapCardRemovable = window.map.map.querySelector('.map__card');
       if (mapCardRemovable) {
@@ -37,7 +39,7 @@
     pinElement.addEventListener('click', onPinItemClick);
     return pinElement;
   };
-  // Функция закрытия карточки
+
   var hideMapCards = function () {
     var pin = document.querySelector('.map__pin--active');
     var card = document.querySelector('.map__card:not(.hidden)');
@@ -48,13 +50,13 @@
       pin.classList.remove('map__pin--active');
     }
   };
-  // Закрываем окно по нажатию клавиши Esc
+
   document.addEventListener('keyup', function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
       hideMapCards();
     }
   });
-  // Если применен фильтр – фильтруем объявления, иначе возвращаем все доступные, но не больше пяти в обоих случаях.
+
   var renderPins = function (filter) {
     window.utils.removeElements('.map__card');
     var data = filter ? window.filter.filterAds(pinsData) : pinsData;
@@ -66,18 +68,17 @@
     mapPins.appendChild(fragment);
   };
 
-  var featureTemplate = '<li class="popup__feature popup__feature--{{x}}"></li>';
-  var photoTemplate = '<img src="{{x}}" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
-
   var getStringCapacity = function (rooms, guests) {
     var string = rooms + ' ' + window.utils.getDeclensionWord(rooms, wordsRoom) + ' для ' + guests + ' ' + window.utils.getDeclensionWord(guests, wordsGuest);
     return string;
   };
+
   var onEscDown = function (evt, func) {
     if (evt.keyCode === ESC_KEYCODE) {
       func();
     }
   };
+
   var getOfferCard = function (offerCards) {
     var cardFragment = document.createDocumentFragment();
     var cardElement = cardTemplate.cloneNode(true);

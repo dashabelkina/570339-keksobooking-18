@@ -1,7 +1,7 @@
 'use strict';
 (function () {
 
-  var getSuccessMessage = function () {
+  var createSuccessMessage = function () {
     var successTemplate = document.querySelector('#success').content.querySelector('.success');
     var successElement = successTemplate.cloneNode(true);
     var main = document.querySelector('main');
@@ -23,6 +23,6 @@
   };
 
   window.success = {
-    getSuccessMessage: getSuccessMessage
+    createSuccessMessage: createSuccessMessage
   };
 })();

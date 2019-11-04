@@ -1,7 +1,7 @@
 'use strict';
 (function () {
 
-  var getErrorMessage = function (errorMessage) {
+  var createErrorMessage = function (errorMessage) {
     var errorTemplate = document.querySelector('#error').content.querySelector('.error');
     var errorElement = errorTemplate.cloneNode(true);
     var main = document.querySelector('main');
@@ -27,6 +27,6 @@
   };
 
   window.error = {
-    getErrorMessage: getErrorMessage
+    createErrorMessage: createErrorMessage
   };
 })();

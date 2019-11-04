@@ -13,7 +13,7 @@
   var setAddressCoords = function (coords) {
     address.value = coords.x + ', ' + coords.y;
   };
-  // Координаты главного пина
+
   var getMainPinPosition = function () {
     var mainPinPosition = {
       x: window.map.mapPinMain.offsetLeft + Math.floor(MAIN_PIN_SIZE / 2),
@@ -25,12 +25,11 @@
   var dragPin = function () {
     window.map.mapPinMain.addEventListener('mousedown', function (evt) {
       evt.preventDefault();
-      // Координаты точки, с которой начинается движение
       var startCoords = {
         x: evt.clientX,
         y: evt.clientY
       };
-      // Удержание кнопки мыши
+
       var onMouseMove = function (moveEvt) {
         moveEvt.preventDefault();
         var shift = {
@@ -53,7 +52,7 @@
         }
         setAddressCoords(mainPinCoords);
       };
-      // При отпускании кнопки мыши перестаем слушать события движения мыши
+
       var onMouseUp = function (upEvt) {
         upEvt.preventDefault();
         document.removeEventListener('mousemove', onMouseMove);

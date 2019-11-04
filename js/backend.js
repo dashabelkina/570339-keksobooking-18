@@ -3,6 +3,7 @@
   var BASE_URL = 'https://js.dump.academy/keksobooking';
   var LOAD_URL = BASE_URL + '/data';
   var TIMEOUT = 10000;
+
   var ErrorText = {
     BAD_REQUEST: 'Неверный запрос.',
     ERROR_FORBIDDEN: 'Доступ запрещён.',
@@ -11,10 +12,10 @@
     ERROR_SERVER: 'Ошибка соединения.',
     ERROR_TIMEOUT: 'Сервер долго не отвечает.'
   };
+
   var createXhr = function (method, url, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
-    // Подписываемся на события 'load', 'error' и 'timeout'
     xhr.addEventListener('load', function () {
       switch (xhr.status) {
         case 200:
@@ -42,17 +43,17 @@
     xhr.addEventListener('timeout', function () {
       onError(ErrorText.ERROR_TIMEOUT);
     });
-    xhr.timeout = TIMEOUT; // Устанавливаем время соединения
-    xhr.open(method, url); // Открываем соединение
+    xhr.timeout = TIMEOUT;
+    xhr.open(method, url);
     return xhr;
   };
 
   var load = function (onSuccess, onError) {
-    createXhr('GET', LOAD_URL, onSuccess, onError).send(); // Делаем запрос и принимаем данные с сервера
+    createXhr('GET', LOAD_URL, onSuccess, onError).send();
   };
 
   var upload = function (onSuccess, onError, data) {
-    createXhr('POST', BASE_URL, onSuccess, onError).send(data); // Загружаем данные на сервер. data – объект с данными, которые необходимо отправить
+    createXhr('POST', BASE_URL, onSuccess, onError).send(data);
   };
 
   window.backend = {

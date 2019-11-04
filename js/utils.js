@@ -20,10 +20,10 @@
     return words[(n % 100 > 4 && n % 100 < 20) ? 2 : [2, 0, 1, 1, 1, 2][Math.min(n % 10, 5)]];
   };
 
-  var getTemplate = function (data, tpl) {
+  var getTemplate = function (data, template) {
     var result = '';
     for (var i = 0; i < data.length; i++) {
-      result += tpl.replace('{{x}}', data[i]);
+      result += template.replace('{{x}}', data[i]);
     }
     return result;
   };
