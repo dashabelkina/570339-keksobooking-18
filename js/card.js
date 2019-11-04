@@ -56,7 +56,7 @@
   });
   // Если применен фильтр – фильтруем объявления, иначе возвращаем все доступные, но не больше пяти в обоих случаях.
   var renderPins = function (filter) {
-    removeElements('.map__card');
+    window.utils.removeElements('.map__card');
     var data = filter ? window.filter.filterAds(pinsData) : pinsData;
     var fragment = document.createDocumentFragment();
     var min = Math.min(data.length, PINS_COUNT);
@@ -64,13 +64,6 @@
       fragment.appendChild(generatePin(data[i]));
     }
     mapPins.appendChild(fragment);
-  };
-  // Функция удаления карточек и меток
-  var removeElements = function (selector) {
-    var elements = document.querySelectorAll(selector);
-    elements.forEach(function (it) {
-      it.remove();
-    });
   };
 
   var featureTemplate = '<li class="popup__feature popup__feature--{{x}}"></li>';
@@ -124,7 +117,6 @@
   window.cards = {
     setData: setData,
     renderPins: renderPins,
-    onEscDown: onEscDown,
-    removeElements: removeElements
+    onEscDown: onEscDown
   };
 })();
