@@ -5,7 +5,6 @@
 
   var map = document.querySelector('.map');
   var mapPinMain = document.querySelector('.map__pin--main');
-  // Координаты пина
   var pinMainX = Math.round(parseInt(mapPinMain.style.left, 10));
   var pinMainY = Math.round(parseInt(mapPinMain.style.top, 10) + PIN_PEAK_HEIGHT);
   var pinDeactivateMainY = Math.round(parseInt(mapPinMain.style.top, 10));
@@ -19,8 +18,8 @@
     }
     return mapPinPosition;
   };
-  // Координаты главного пина по умолчанию
-  var getMapPinMainStartPosition = function () {
+
+  var mapPinMainStartPosition = function () {
     mapPinMain.style.left = pinMainX + 'px';
     mapPinMain.style.top = pinDeactivateMainY + 'px';
   };
@@ -34,10 +33,9 @@
   };
 
   var onLoadError = function (errorText) {
-    window.error.getErrorMessage(errorText);
+    window.error.createErrorMessage(errorText);
   };
 
-  // Активное состояние страницы
   var activatePage = function () {
     if (!map.classList.contains('map--faded')) {
       return;
@@ -47,11 +45,11 @@
     window.form.toggleForm(true);
     setAddressInInput(true);
   };
-  // Перевод страницы в активное состояние при клике, срабатывает один раз
+
   mapPinMain.addEventListener('mouseup', function () {
     activatePage();
   });
-  // Перевод страницы в активное состояние при нажатии Enter
+
   mapPinMain.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
       activatePage();
@@ -63,6 +61,6 @@
     PIN_PEAK_HEIGHT: PIN_PEAK_HEIGHT,
     map: map,
     setAddressInInput: setAddressInInput,
-    mapPinMainStartPosition: getMapPinMainStartPosition
+    mapPinMainStartPosition: mapPinMainStartPosition
   };
 })();
